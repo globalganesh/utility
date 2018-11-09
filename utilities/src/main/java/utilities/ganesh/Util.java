@@ -5,16 +5,23 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
+import android.media.ExifInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -112,9 +119,9 @@ public class Util {
 
     public static int getIndex(Spinner spinner, String myString) {
         Log.e("UTIL: ", myString);
-        Log.e("UTIL:", spinner.getCount() +"");
+        Log.e("UTIL:", spinner.getCount() + "");
         for (int i = 0; i < spinner.getCount(); i++) {
-            Log.e("UTIL", i +"");
+            Log.e("UTIL", i + "");
             Log.e("UTIL: ", spinner.getItemAtPosition(i).toString());
             if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)) {
                 return i;
@@ -142,6 +149,82 @@ public class Util {
                 e.printStackTrace();
             }
         }
+        return formattedDate;
+    }
+
+    public static boolean isNetworkCheckAlert(Activity activity) {
+        if (!isNetWorkAvailable(activity)) {
+            showAlertDialog(activity, "Warning !", "Please check your internet connectivity...", -2, true);
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean passwordLength(Context context, String password, int length, String errMsg) {
+        if (password.length() >= length)
+            return true;
+        showToast(context, errMsg);
+        return false;
+    }
+
+    public static void showLongToast(Context context, String text) {
+        Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+    }
+
+    public static String generateOTP() {
+        long timeSeed = System.nanoTime();
+        double randSeed = Math.random() * 1000;
+        long midSeed = (long) (timeSeed * randSeed);
+        String rand6No = midSeed + "";
+        return rand6No.substring(0, 6);
+    }
+
+    public static boolean isSMSpermissionGrantedAlready(Activity activity, String permission, int requestCode) {
+        if (ActivityCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity, new String[]{permission}, requestCode);
+            return false;
+        }
+        return true;
+    }
+
+    public static Bitmap rotateImage(Bitmap source, float angle) {
+        Bitmap bitmap = null;
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        try {
+            bitmap = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+        } catch (OutOfMemoryError err) {
+            err.printStackTrace();
+        }
+        return bitmap;
+    }
+
+    public static Bitmap imageOreintationValidator(Bitmap bitmap, String path) {
+        ExifInterface ei;
+        try {
+            ei = new ExifInterface(path);
+            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    bitmap = rotateImage(bitmap, 90);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    bitmap = rotateImage(bitmap, 180);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    bitmap = rotateImage(bitmap, 270);
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
+
+    public static String getCurrentDate() {
+        Date date = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = df.format(date);
         return formattedDate;
     }
 }
