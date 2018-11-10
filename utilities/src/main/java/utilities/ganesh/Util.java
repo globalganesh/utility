@@ -18,7 +18,10 @@ import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -248,5 +251,16 @@ public class Util {
             e.getMessage();
             return null;
         }
+    }
+
+    public static void showAlertDialogNoButtons(final Activity activity, String message) {
+        LayoutInflater inflater = LayoutInflater.from(activity);
+        View view = inflater.inflate(R.layout.textview_scroll_alert, null);
+        TextView textview = (TextView) view.findViewById(R.id.textmsg);
+        textview.setText(message);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
+        alertDialog.setView(view);
+        AlertDialog alert = alertDialog.create();
+        alert.show();
     }
 }
