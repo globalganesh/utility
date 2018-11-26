@@ -26,6 +26,8 @@ import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -262,5 +264,29 @@ public class Util {
         alertDialog.setView(view);
         AlertDialog alert = alertDialog.create();
         alert.show();
+    }
+
+
+    public static Double string2double(String input) {
+        if (TextUtils.isEmpty(input))
+            return 0.0;
+        return Double.parseDouble(input);
+    }
+
+    public static void copyStream(InputStream is, OutputStream os) {
+        final int buffer_size = 1024;
+        try {
+
+            byte[] bytes = new byte[buffer_size];
+            for (; ; ) {
+
+                int count = is.read(bytes, 0, buffer_size);
+                if (count == -1)
+                    break;
+
+                os.write(bytes, 0, count);
+            }
+        } catch (Exception ex) {
+        }
     }
 }
