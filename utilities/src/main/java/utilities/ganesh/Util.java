@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -14,6 +15,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -288,5 +290,15 @@ public class Util {
             }
         } catch (Exception ex) {
         }
+    }
+
+    private void delayLaunchActivity(final Class tClass, int duration, final Activity activity) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                activity.startActivity(new Intent(activity, tClass));
+                activity.finish();
+            }
+        }, duration);
     }
 }
