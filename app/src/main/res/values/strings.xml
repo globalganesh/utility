@@ -1,4 +1,3 @@
 <resources>
     <string name="app_name">Utility</string>
-    <string name="service_error">Something went wrong from service</string>
 </resources>
