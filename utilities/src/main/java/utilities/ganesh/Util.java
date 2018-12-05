@@ -292,7 +292,7 @@ public class Util {
         }
     }
 
-    private void delayLaunchActivity(final Class tClass, int duration, final Activity activity) {
+    public void delayLaunchActivity(final Class tClass, int duration, final Activity activity) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
